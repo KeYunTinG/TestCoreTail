@@ -1,5 +1,6 @@
 import '../../../scss/tailwind.scss'
 import { useParams } from 'react-router-dom';
+import numeral from 'numeral'
 import {
   cibCcAmex,
   cibCcApplePay,
@@ -82,6 +83,7 @@ const people = [
   ]
   const ordersTable = [
     {
+      id:1,
       project:
         '【PHILIPS 黑金剛】三合一磁吸充電系列｜一秒強勁吸附，智慧溫控晶片，簡化生活快速時尚！',
       productOrders: [
@@ -109,6 +111,136 @@ const people = [
       price: 71711,
       payment: { name: 'PayPal', icon: cibCcPaypal },
       purchaseTime: '2024-04-11',
+      imageUrl:
+        'https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F2172062%2F1d219db0-2f5c-7f60-81ba-0bdb5a3f9574.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=cd7aaa999c1e9c6ab474da359b203be6',
+    },
+    {
+      id:1,
+      project:
+        '【PHILIPS 黑金剛】三合一磁吸充電系列｜一秒強勁吸附，智慧溫控晶片，簡化生活快速時尚！',
+      productOrders: [
+        {
+          name: '早鳥 旗艦組',
+          price: 2990,
+          count: 2,
+        },
+        {
+          name: '早鳥 三合一充電組',
+          price: 2390,
+          count: 3,
+        },
+        {
+          name: '早鳥 行動電源組',
+          price: 1790,
+          count: 4,
+        },
+        {
+          name: '超早鳥 旗艦組',
+          price: 2850,
+          count: 7,
+        },
+      ],
+      price: 71711,
+      payment: { name: 'PayPal', icon: cibCcPaypal },
+      purchaseTime: '2024-04-11',
+      imageUrl:
+        'https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F2172062%2F1d219db0-2f5c-7f60-81ba-0bdb5a3f9574.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=cd7aaa999c1e9c6ab474da359b203be6',
+    },
+    {
+      id:1,
+      project:
+        '【PHILIPS 黑金剛】三合一磁吸充電系列｜一秒強勁吸附，智慧溫控晶片，簡化生活快速時尚！',
+      productOrders: [
+        {
+          name: '早鳥 旗艦組',
+          price: 2990,
+          count: 2,
+        },
+        {
+          name: '早鳥 三合一充電組',
+          price: 2390,
+          count: 3,
+        },
+        {
+          name: '早鳥 行動電源組',
+          price: 1790,
+          count: 4,
+        },
+        {
+          name: '超早鳥 旗艦組',
+          price: 2850,
+          count: 7,
+        },
+      ],
+      price: 71711,
+      payment: { name: 'PayPal', icon: cibCcPaypal },
+      purchaseTime: '2024-04-11',
+      imageUrl:
+        'https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F2172062%2F1d219db0-2f5c-7f60-81ba-0bdb5a3f9574.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=cd7aaa999c1e9c6ab474da359b203be6',
+    },
+    {
+      id:1,
+      project:
+        '【PHILIPS 黑金剛】三合一磁吸充電系列｜一秒強勁吸附，智慧溫控晶片，簡化生活快速時尚！',
+      productOrders: [
+        {
+          name: '早鳥 旗艦組',
+          price: 2990,
+          count: 2,
+        },
+        {
+          name: '早鳥 三合一充電組',
+          price: 2390,
+          count: 3,
+        },
+        {
+          name: '早鳥 行動電源組',
+          price: 1790,
+          count: 4,
+        },
+        {
+          name: '超早鳥 旗艦組',
+          price: 2850,
+          count: 7,
+        },
+      ],
+      price: 71711,
+      payment: { name: 'PayPal', icon: cibCcPaypal },
+      purchaseTime: '2024-04-11',
+      imageUrl:
+        'https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F2172062%2F1d219db0-2f5c-7f60-81ba-0bdb5a3f9574.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=cd7aaa999c1e9c6ab474da359b203be6',
+    },
+    {
+      id:1,
+      project:
+        '【PHILIPS 黑金剛】三合一磁吸充電系列｜一秒強勁吸附，智慧溫控晶片，簡化生活快速時尚！',
+      productOrders: [
+        {
+          name: '早鳥 旗艦組',
+          price: 2990,
+          count: 2,
+        },
+        {
+          name: '早鳥 三合一充電組',
+          price: 2390,
+          count: 3,
+        },
+        {
+          name: '早鳥 行動電源組',
+          price: 1790,
+          count: 4,
+        },
+        {
+          name: '超早鳥 旗艦組',
+          price: 2850,
+          count: 7,
+        },
+      ],
+      price: 71711,
+      payment: { name: 'PayPal', icon: cibCcPaypal },
+      purchaseTime: '2024-04-11',
+      imageUrl:
+        'https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F2172062%2F1d219db0-2f5c-7f60-81ba-0bdb5a3f9574.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=cd7aaa999c1e9c6ab474da359b203be6',
     },
   ]
   
@@ -116,6 +248,27 @@ const people = [
         <>
         <h1>{id}</h1>
       <ul role="list" className="divide-y divide-gray-100">
+        {ordersTable.map((orders) => (
+          <li key={orders.id} className="flex justify-between gap-x-6 py-3 hover:bg-gray-200">
+            <div className="flex min-w-0 gap-x-3 pl-2">
+              <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={orders.imageUrl} alt="" />
+              <div className="min-w-0 flex-auto">
+                <p className="text-lg font-semibold leading-6 text-gray-900">{orders.project}</p>
+                {orders.productOrders.map((productOrder) => (
+                <p className="mt-1 truncate text-sm leading-5 text-gray-500 pl-2">{productOrder.name}X{productOrder.count}</p>
+                ))}
+              </div>
+            </div>
+            <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end pr-2">
+              <p className="text-base leading-6 text-gray-900">${numeral(orders.price).format('0,0')}</p>
+                <p className="mt-1 text-base leading-5 text-gray-500">
+                   <time>{orders.purchaseTime}</time>
+                </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      {/* <ul role="list" className="divide-y divide-gray-100">
         {people.map((person) => (
           <li key={person.email} className="flex justify-between gap-x-6 py-3 hover:bg-gray-200">
             <div className="flex min-w-0 gap-x-3 pl-2">
@@ -133,7 +286,7 @@ const people = [
             </div>
           </li>
         ))}
-      </ul>
+      </ul> */}
       </>
     )
 };
