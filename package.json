@@ -19,6 +19,7 @@
     "@coreui/utils": "^2.0.2",
     "classnames": "^2.5.1",
     "core-js": "^3.37.0",
+    "json-server": "^1.0.0-alpha.23",
     "numeral": "^2.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,6 +1,5 @@
-import React, { useState, useEffect }from 'react'
+import React, { useState } from 'react'
 import numeral from 'numeral'
-import { getProjects } from '../../api/Projects'
 
 import {
   CAvatar,
@@ -50,7 +49,6 @@ const projects = () => {
   const [productContext, setProductContext] = useState({})
   const [modalText, setModalText] = useState('')
   const [productVisible, setProductVisible] = useState(true)
-  const [projects, setProjects] = useState(null);
   const productTableClick = (itemId) => {
     setProductVisible((prevState) => ({
       ...prevState,
@@ -79,22 +77,6 @@ const projects = () => {
       }
     }
   }
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const fetchedProjects  = await getProjects();
-  
-      setProjects(
-        fetchedProjects.map((project) => ({
-          ...project,
-          isEdit: false,
-        }))
-      );
-      console.log(projects)
-    };
-  
-    fetchProjects();
-  }, []);
-
   const projectTable = [
     {
       id: 0,
@@ -693,44 +675,44 @@ const projects = () => {
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {projects && projects.map((item, index) => (
+          {projectTable.map((item, index) => (
             <React.Fragment key={index}>
               <CTableRow>
                 <CTableDataCell className="text-center">
                   <CAvatar size="md" src={item.avatar} />
                 </CTableDataCell>
                 <CTableDataCell>
-                  <div>{item.Name}</div>
+                  <div>{item.name}</div>
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
-                  <div>{statusMap[item.Status]} </div>
+                  <div>{statusMap[item.status]} </div>
                 </CTableDataCell>
                 <CTableDataCell>
                   <div className="d-flex justify-content-between text-nowrap">
                     <div className="fw-semibold">
-                      {Math.floor(item.AccumulatedAmount >= item.Goal ? 100 : (item.AccumulatedAmount / item.Goal) * 100)}
+                      {Math.floor(item.amount >= item.goal ? 100 : (item.amount / item.goal) * 100)}
                       %
                     </div>
                     <div className="ms-3">
                       <small className="text-body-secondary">
-                        {numeral(item.AccumulatedAmount).format('0,0')}/{numeral(item.Goal).format('0,0')}
+                        {numeral(item.amount).format('0,0')}/{numeral(item.goal).format('0,0')}
                       </small>
                     </div>
                   </div>
                   <CProgress
                     thin
                     color={
-                      item.AccumulatedAmount / item.Goal >= 0.8
+                      item.amount / item.goal >= 0.8
                         ? 'danger'
-                        : item.AccumulatedAmount / item.Goal >= 0.5
+                        : item.amount / item.goal >= 0.5
                           ? 'warning'
                           : 'success'
                     }
-                    value={item.AccumulatedAmount >= item.Goal ? 100 : (item.AccumulatedAmount / item.Goal) * 100}
+                    value={item.amount >= item.goal ? 100 : (item.amount / item.goal) * 100}
                   />
                 </CTableDataCell>
                 <CTableDataCell>
-                  <div className="fw-semibold text-nowrap text-center">{item.ExpireDate}</div>
+                  <div className="fw-semibold text-nowrap text-center">{item.activity}</div>
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   <CButton
@@ -741,11 +723,11 @@ const projects = () => {
                       setProjectContext([
                         item.avatar,
                         item.name,
-                        item.Description,
-                        item.Status,
-                        item.Goal,
-                        item.Date,
-                        item.ExpireDate,
+                        item.description,
+                        item.status,
+                        item.goal,
+                        item.startingTime,
+                        item.endTime,
                       ])
                     }}
                   >
@@ -754,8 +736,8 @@ const projects = () => {
                   </CButton>
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
-                  <CButton onClick={() => productTableClick(item.ID)}>
-                    {productVisible[item.ID] ? (
+                  <CButton onClick={() => productTableClick(item.id)}>
+                    {productVisible[item.id] ? (
                       <CIcon size="xl" icon={cilArrowCircleTop} />
                     ) : (
                       <CIcon size="xl" icon={cilArrowCircleBottom} />
@@ -766,7 +748,7 @@ const projects = () => {
               {
                 // #region products
               }
-              {productVisible[item.ID] && (
+              {productVisible[item.id] && (
                 <React.Fragment>
                   <CTableRow>
                     <CTableHeaderCell className="bg-body-tertiary text-center">
@@ -791,7 +773,7 @@ const projects = () => {
                         onClick={() => {
                           setVisibleProductLg(!visibleProductLg)
                           setAlter(false)
-                          setProductContext([item.ID])
+                          setProductContext([item.id])
                         }}
                       >
                         <CIcon icon={cilPlus} className="me-2" />
@@ -799,50 +781,50 @@ const projects = () => {
                       </CButton>
                     </CTableHeaderCell>
                   </CTableRow>
-                  {item.Products.map((product, productIndex) => (
+                  {item.products.map((product, productIndex) => (
                     <CTableRow key={`product-${index}-${productIndex}`}>
                       <CTableDataCell className="bg-body-secondary text-center">
                         <div>{productIndex + 1}</div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary">
-                        <div>{product.PdName}</div>
+                        <div>{product.name}</div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary text-center">
-                        <div>{statusMap[product.Status]} </div>
+                        <div>{statusMap[product.status]} </div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary">
-                        <div className=" d-flex justify-content-Quantitybetween text-nowrap">
+                        <div className=" d-flex justify-content-between text-nowrap">
                           <div className="fw-semibold">
                             {Math.floor(
-                              (product.Quantity - product.Inventory / (product.Quantity)) * 100,
+                              (product.purchased / (product.purchased + product.inventory)) * 100,
                             )}
                             %
                           </div>
                           <div className="ms-3">
                             <small className="text-body-secondary">
-                              {product.Quantity - product.Inventory}/{product.Quantity}
+                              {product.purchased}/{product.purchased + product.inventory}
                             </small>
                           </div>
                         </div>
                         <CProgress
                           thin
                           color={
-                            (product.Quantity - product.Inventory) / product.Quantity >= 0.8
+                            product.purchased / (product.purchased + product.inventory) >= 0.8
                               ? 'danger'
-                              : (product.Quantity - product.Inventory)/ product.Quantity >= 0.5
+                              : product.purchased / (product.purchased + product.inventory) >= 0.5
                                 ? 'warning'
                                 : 'success'
                           }
                           value={
-                            ((product.Quantity - product.Inventory)/ product.Quantity) * 100
+                            (product.purchased / (product.purchased + product.inventory)) * 100
                           }
                         />
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary text-center">
-                        <div>{product.Quantity}</div>
+                        <div>{product.purchased}</div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary text-center">
-                        <div>{product.Inventory}</div>
+                        <div>{product.inventory}</div>
                       </CTableDataCell>
                       <CTableDataCell
                         className="bg-body-secondary text-center"
@@ -854,15 +836,15 @@ const projects = () => {
                             setVisibleProductLg(!visibleProductLg)
                             setAlter(true)
                             setProductContext([
-                              item.ID,
-                              product.Thumbnail,
-                              product.PdName,
-                              product.PdDesc,
-                              product.Status,
-                              product.Price,
-                              product.Inventory,
-                              product.Date,
-                              product.ExpireDate,
+                              item.id,
+                              product.avatar,
+                              product.name,
+                              product.description,
+                              product.status,
+                              product.price,
+                              product.inventory,
+                              product.startingTime,
+                              product.endTime,
                             ])
                           }}
                         >
