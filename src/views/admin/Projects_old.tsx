@@ -41,7 +41,7 @@ import avatar4 from '../../assets/images/mygo/4.jpg'
 import avatar5 from '../../assets/images/mygo/5.jpg'
 import avatar6 from '../../assets/images/mygo/6.jpg'
 
-const projects = () => {
+const Projects = () => {
   const [visible, setVisible] = useState(false)
   const [visibleProjectLg, setVisibleProjectLg] = useState(false)
   const [projectContext, setProjectContext] = useState({})
@@ -49,6 +49,7 @@ const projects = () => {
   const [productContext, setProductContext] = useState({})
   const [modalText, setModalText] = useState('')
   const [productVisible, setProductVisible] = useState(true)
+  //下拉式選單
   const productTableClick = (itemId) => {
     setProductVisible((prevState) => ({
       ...prevState,
@@ -1082,4 +1083,4 @@ const projects = () => {
   )
 }
 
-export default projects
+export default Projects

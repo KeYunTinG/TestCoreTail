@@ -19,7 +19,6 @@ import {
   CModalTitle,
   CModalHeader,
   CModalBody,
-  CModalFooter,
   CForm,
   CFormInput,
   CInputGroup,
@@ -34,24 +33,26 @@ import {
   cilColorBorder,
   cilClipboard,
 } from '@coreui/icons'
-
-import avatar1 from '../../assets/images/mygo/1.jpg'
-import avatar2 from '../../assets/images/mygo/2.jpg'
-import avatar3 from '../../assets/images/mygo/3.jpg'
-import avatar4 from '../../assets/images/mygo/4.jpg'
-import avatar5 from '../../assets/images/mygo/5.jpg'
-import avatar6 from '../../assets/images/mygo/6.jpg'
-
-const projects = () => {
-  const [visible, setVisible] = useState(false)
+//計算剩餘天數
+function calculateRemainingDays(expireDate: string, startDate: string): number {
+  const endDate: Date = new Date(expireDate);
+  const startDateObj: Date = new Date(startDate);
+  const timeDiff: number = endDate.getTime() - startDateObj.getTime();
+  const remainingDays: number = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  return remainingDays;
+}
+const Projects = () => {
+  //const [visible, setVisible] = useState(false)
+  // const [modalText, setModalText] = useState('')
   const [visibleProjectLg, setVisibleProjectLg] = useState(false)
-  const [projectContext, setProjectContext] = useState({})
   const [visibleProductLg, setVisibleProductLg] = useState(false)
+  const [projectContext, setProjectContext] = useState({})
   const [productContext, setProductContext] = useState({})
-  const [modalText, setModalText] = useState('')
-  const [productVisible, setProductVisible] = useState(true)
+  const [productVisible, setProductVisible] = useState<{ [key: string]: boolean }>({});
+  const [selectedImage, setSelectedImage] = useState(null)
   const [projects, setProjects] = useState(null);
-  const productTableClick = (itemId) => {
+   //下拉式選單
+  const productTableClick = (itemId: string) => {
     setProductVisible((prevState) => ({
       ...prevState,
       [itemId]: !prevState[itemId],
@@ -62,7 +63,6 @@ const projects = () => {
     1: '募資中',
     2: '下架',
   }
-  const [selectedImage, setSelectedImage] = useState(null)
   const handleFileChange = (event) => {
     const file = event.target.files[0]
     if (file) {
@@ -79,6 +79,7 @@ const projects = () => {
       }
     }
   }
+   //載入api
   useEffect(() => {
     const fetchProjects = async () => {
       const fetchedProjects  = await getProjects();
@@ -89,566 +90,12 @@ const projects = () => {
           isEdit: false,
         }))
       );
-      console.log(projects)
+      //console.log(projects)
     };
   
     fetchProjects();
   }, []);
 
-  const projectTable = [
-    {
-      id: 0,
-      avatar: avatar1,
-      name: 'Yiorgos Avraamu',
-      status: 1,
-      description: '給錢',
-      amount: 350000,
-      goal: 500000,
-      startingTime: '2024-04-11',
-      endTime: '2024-07-01',
-      products: [
-        {
-          id: 1,
-          no: 1,
-          avatar: avatar6,
-          name: '小冰箱1',
-          status: 1,
-          description: '給錢',
-          price: 500,
-          purchased: 11,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 2,
-          no: 2,
-          avatar: avatar6,
-          name: '單門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 1500,
-          purchased: 22,
-          inventory: 33,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 3,
-          no: 3,
-          avatar: avatar6,
-          name: '雙門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 3600,
-          purchased: 0,
-          inventory: 100,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 4,
-          no: 4,
-          avatar: avatar6,
-          name: '對開冰箱',
-          status: 1,
-          description: '給錢',
-          price: 6500,
-          purchased: 200,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 5,
-          no: 5,
-          avatar: avatar6,
-          name: '四門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 13520,
-          purchased: 3,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 6,
-          no: 6,
-          avatar: avatar6,
-          name: '五門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 24520,
-          purchased: 50,
-          inventory: 0,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-      ],
-      activity: '10 sec ago',
-    },
-    {
-      id: 1,
-      avatar: avatar2,
-      name: 'Avram Tarasios',
-      status: 1,
-      description: '給錢',
-      amount: 240000,
-      goal: 500000,
-      startingTime: '2024-04-11',
-      endTime: '2024-07-01',
-      products: [
-        {
-          id: 7,
-          no: 1,
-          avatar: avatar6,
-          name: '小冰箱1',
-          status: 1,
-          description: '給錢',
-          price: 500,
-          purchased: 11,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 8,
-          no: 2,
-          avatar: avatar6,
-          name: '單門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 1500,
-          purchased: 22,
-          inventory: 33,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 9,
-          no: 3,
-          avatar: avatar6,
-          name: '雙門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 3600,
-          purchased: 0,
-          inventory: 100,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 10,
-          no: 4,
-          avatar: avatar6,
-          name: '對開冰箱',
-          status: 1,
-          description: '給錢',
-          price: 6500,
-          purchased: 200,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 11,
-          no: 5,
-          avatar: avatar6,
-          name: '四門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 13520,
-          purchased: 3,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 12,
-          no: 6,
-          avatar: avatar6,
-          name: '五門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 24520,
-          purchased: 50,
-          inventory: 0,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-      ],
-      activity: '5 minutes ago',
-    },
-    {
-      id: 2,
-      avatar: avatar3,
-      name: 'Quintin Ed',
-      status: 2,
-      description: '給錢',
-      amount: 350000,
-      goal: 500000,
-      startingTime: '2024-04-11',
-      endTime: '2024-07-01',
-      products: [
-        {
-          id: 13,
-          no: 1,
-          avatar: avatar6,
-          name: '小冰箱1',
-          status: 1,
-          description: '給錢',
-          price: 500,
-          purchased: 11,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 14,
-          no: 2,
-          avatar: avatar6,
-          name: '單門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 1500,
-          purchased: 22,
-          inventory: 33,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 15,
-          no: 3,
-          avatar: avatar6,
-          name: '雙門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 3600,
-          purchased: 0,
-          inventory: 100,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 16,
-          no: 4,
-          avatar: avatar6,
-          name: '對開冰箱',
-          status: 1,
-          description: '給錢',
-          price: 6500,
-          purchased: 200,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 17,
-          no: 5,
-          avatar: avatar6,
-          name: '四門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 13520,
-          purchased: 3,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 18,
-          no: 6,
-          avatar: avatar6,
-          name: '五門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 24520,
-          purchased: 50,
-          inventory: 0,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-      ],
-      activity: '1 hour ago',
-    },
-    {
-      id: 3,
-      avatar: avatar4,
-      name: 'Enéas Kwadwo',
-      status: 1,
-      description: '給錢',
-      amount: 1000,
-      goal: 500000,
-      startingTime: '2024-04-11',
-      endTime: '2024-07-01',
-      products: [
-        {
-          id: 19,
-          no: 1,
-          avatar: avatar6,
-          name: '小冰箱1',
-          status: 1,
-          description: '給錢',
-          price: 500,
-          purchased: 11,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 20,
-          no: 2,
-          avatar: avatar6,
-          name: '單門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 1500,
-          purchased: 22,
-          inventory: 33,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 21,
-          no: 3,
-          avatar: avatar6,
-          name: '雙門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 3600,
-          purchased: 0,
-          inventory: 100,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 22,
-          no: 4,
-          avatar: avatar6,
-          name: '對開冰箱',
-          status: 1,
-          description: '給錢',
-          price: 6500,
-          purchased: 200,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 23,
-          no: 5,
-          avatar: avatar6,
-          name: '四門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 13520,
-          purchased: 3,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 24,
-          no: 6,
-          avatar: avatar6,
-          name: '五門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 24520,
-          purchased: 50,
-          inventory: 0,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-      ],
-      activity: 'Last month',
-    },
-    {
-      id: 4,
-      avatar: avatar5,
-      name: 'Agapetus Tadeáš',
-      status: 1,
-      description: '給錢',
-      amount: 350000,
-      goal: 500000,
-      startingTime: '2024-04-11',
-      endTime: '2024-07-01',
-      products: [
-        {
-          id: 25,
-          no: 1,
-          avatar: avatar6,
-          name: '小冰箱1',
-          status: 1,
-          description: '給錢',
-          price: 500,
-          purchased: 11,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 26,
-          no: 2,
-          avatar: avatar6,
-          name: '單門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 1500,
-          purchased: 22,
-          inventory: 33,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 27,
-          no: 3,
-          avatar: avatar6,
-          name: '雙門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 3600,
-          purchased: 0,
-          inventory: 100,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 28,
-          no: 4,
-          avatar: avatar6,
-          name: '對開冰箱',
-          status: 1,
-          description: '給錢',
-          price: 6500,
-          purchased: 200,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 29,
-          no: 5,
-          avatar: avatar6,
-          name: '四門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 13520,
-          purchased: 3,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 30,
-          no: 6,
-          avatar: avatar6,
-          name: '五門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 24520,
-          purchased: 50,
-          inventory: 0,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-      ],
-      activity: 'Last week',
-    },
-    {
-      id: 5,
-      avatar: avatar6,
-      name: 'Friderik Dávid',
-      status: 1,
-      description: '給錢',
-      amount: 490000,
-      goal: 500000,
-      startingTime: '2024-04-11',
-      endTime: '2024-07-01',
-      products: [
-        {
-          id: 30,
-          no: 1,
-          avatar: avatar6,
-          name: '小冰箱1',
-          status: 1,
-          description: '給錢',
-          price: 500,
-          purchased: 11,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 31,
-          no: 2,
-          avatar: avatar6,
-          name: '單門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 1500,
-          purchased: 22,
-          inventory: 33,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 32,
-          no: 3,
-          avatar: avatar6,
-          name: '雙門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 3600,
-          purchased: 0,
-          inventory: 100,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 33,
-          no: 4,
-          avatar: avatar6,
-          name: '對開冰箱',
-          status: 1,
-          description: '給錢',
-          price: 6500,
-          purchased: 200,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 34,
-          no: 5,
-          avatar: avatar6,
-          name: '四門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 13520,
-          purchased: 3,
-          inventory: 3,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-        {
-          id: 35,
-          no: 6,
-          avatar: avatar6,
-          name: '五門冰箱',
-          status: 1,
-          description: '給錢',
-          price: 24520,
-          purchased: 50,
-          inventory: 0,
-          startingTime: '2024-04-11',
-          endTime: '2024-07-01',
-        },
-      ],
-      activity: 'Last week',
-    },
-  ]
   return (
     <>
       {
@@ -673,7 +120,7 @@ const projects = () => {
         //#endregion
       }
       {
-        //#region main
+        //#region main-----------------------------------------------------------------------------------
       }
       <CTable align="middle" className="mb-0 border" hover responsive>
         <CTableHead className="text-nowrap">
@@ -699,7 +146,7 @@ const projects = () => {
                 <CTableDataCell className="text-center">
                   <CAvatar size="md" src={item.avatar} />
                 </CTableDataCell>
-                <CTableDataCell>
+                <CTableDataCell width={500}>
                   <div>{item.Name}</div>
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
@@ -708,7 +155,7 @@ const projects = () => {
                 <CTableDataCell>
                   <div className="d-flex justify-content-between text-nowrap">
                     <div className="fw-semibold">
-                      {Math.floor(item.AccumulatedAmount >= item.Goal ? 100 : (item.AccumulatedAmount / item.Goal) * 100)}
+                      {Math.floor(item.AccumulatedAmount / item.Goal * 100)}
                       %
                     </div>
                     <div className="ms-3">
@@ -726,11 +173,11 @@ const projects = () => {
                           ? 'warning'
                           : 'success'
                     }
-                    value={item.AccumulatedAmount >= item.Goal ? 100 : (item.AccumulatedAmount / item.Goal) * 100}
+                    value={(item.AccumulatedAmount / item.Goal) >= 100 ? 100 : (item.AccumulatedAmount / item.Goal) * 100}
                   />
                 </CTableDataCell>
                 <CTableDataCell>
-                  <div className="fw-semibold text-nowrap text-center">{item.ExpireDate}</div>
+                  <div className="fw-semibold text-nowrap text-center"> {calculateRemainingDays(item.ExpireDate, item.Date) < 0 ? 0 : calculateRemainingDays(item.ExpireDate, item.Date)}天</div>
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   <CButton
@@ -764,7 +211,7 @@ const projects = () => {
                 </CTableDataCell>
               </CTableRow>
               {
-                // #region products
+// #region products-----------------------------------------------------------------------------------
               }
               {productVisible[item.ID] && (
                 <React.Fragment>
@@ -777,7 +224,7 @@ const projects = () => {
                       狀態
                     </CTableHeaderCell>
                     <CTableHeaderCell className="bg-body-tertiary">
-                      進度(已售出/目標)
+                      進度(售出/目標)
                     </CTableHeaderCell>
                     <CTableHeaderCell className="bg-body-tertiary text-center">
                       剩餘時間
@@ -811,10 +258,10 @@ const projects = () => {
                         <div>{statusMap[product.Status]} </div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary">
-                        <div className=" d-flex justify-content-Quantitybetween text-nowrap">
+                        <div className=" d-flex justify-content-between text-nowrap">
                           <div className="fw-semibold">
                             {Math.floor(
-                              (product.Quantity - product.Inventory / (product.Quantity)) * 100,
+                              ((product.Quantity - product.Inventory) / product.Quantity) * 100,
                             )}
                             %
                           </div>
@@ -839,7 +286,7 @@ const projects = () => {
                         />
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary text-center">
-                        <div>{product.Quantity}</div>
+                        <div>{calculateRemainingDays(product.ExpireDate, product.Date) < 0 ? 0 : calculateRemainingDays(product.ExpireDate, product.Date)}天</div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary text-center">
                         <div>{product.Inventory}</div>
@@ -885,9 +332,9 @@ const projects = () => {
         //#endregion
       }
       {
-        //#region msgbox
+//#region msgbox-----------------------------------------------------------------------------------
       }
-      <CModal
+      {/* <CModal
         visible={visible}
         onClose={() => setVisible(false)}
         aria-labelledby="LiveDemoExampleLabel"
@@ -904,7 +351,7 @@ const projects = () => {
           </CButton>
           <CButton color="primary">Save changes</CButton>
         </CModalFooter>
-      </CModal>
+      </CModal> */}
       {
         //#endregion
       }
@@ -942,9 +389,13 @@ const projects = () => {
                       style={{ maxWidth: '100%', maxHeight: '100%' }}
                     />
                   )
-                ) : (
-                  ''
-                )}
+                ) : (selectedImage ? (
+                  <img
+                    src={selectedImage}
+                    alt="Selected"
+                    style={{ maxWidth: '100%', maxHeight: '100%' }}
+                  />
+                ) : '')}
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>專案名稱</CInputGroupText>
@@ -1001,7 +452,7 @@ const projects = () => {
         //#endregion
       }
       {
-        //#region 產品選單
+//#region 產品選單-----------------------------------------------------------------------------------
       }
       <CModal
         fullscreen="lg"
@@ -1100,4 +551,4 @@ const projects = () => {
   )
 }
 
-export default projects
+export default Projects
