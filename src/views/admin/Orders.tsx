@@ -1,5 +1,29 @@
 import '../../../scss/tailwind.scss'
 import {
+  CAvatar,
+  CButton,
+  CCardBody,
+  CCol,
+  CProgress,
+  CRow,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+  CModal,
+  CModalTitle,
+  CModalHeader,
+  CModalBody,
+  CForm,
+  CFormInput,
+  CInputGroup,
+  CInputGroupText,
+  CFormSelect,
+} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import {
   cibCcAmex,
   cibCcApplePay,
   cibCcMastercard,
@@ -20,6 +44,7 @@ import {
   cilPeople,
   cilUser,
   cilUserFemale,
+  cilPlus,
 } from '@coreui/icons'
 
 import avatar1 from '../../assets/images/avatars/1.jpg'
@@ -93,8 +118,33 @@ const orders = () => {
         <div className="bg-gray-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:max-w-none ">
-          <h2 className="text-2xl font-bold text-gray-900">專案列表</h2>
-
+          <h2 className="text-4xl font-bold text-gray-900">專案列表</h2>
+          <div className='pt-3'>
+          <CButton
+            color="primary"
+            onClick={() => {
+            }}
+            style={{ marginRight: '10px' }}
+          >
+            全部
+          </CButton>
+          <CButton
+            color="primary"
+            onClick={() => {
+            }}
+            style={{ marginRight: '10px' }}
+          >
+            進行中
+          </CButton>
+          <CButton
+            color="primary"
+            onClick={() => {
+            }}
+            style={{ marginRight: '10px' }}
+          >
+            已到期
+          </CButton>
+          </div>
           <div className="mt-6 space-y-12 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:space-y-0">
             {callouts.map((callout) => (
               <div key={callout.id} className="group relative">
