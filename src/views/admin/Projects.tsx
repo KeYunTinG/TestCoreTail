@@ -80,21 +80,27 @@ const Projects = () => {
     }
   }
    //載入api
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const fetchedProjects  = await getProjects();
-  
+ useEffect(() => {
+  const fetchProjects = async () => {
+    try {
+      const fetchedProjects = await getProjects();
+
       setProjects(
         fetchedProjects.map((project) => ({
           ...project,
           isEdit: false,
         }))
       );
-      //console.log(projects)
-    };
-  
-    fetchProjects();
-  }, []);
+
+      console.log('fetchedProjects:', fetchedProjects); // 確認資料是否成功加載
+    } catch (error) {
+      // 處理錯誤
+      console.error('Error fetching projects:', error);
+    }
+  };
+
+  fetchProjects();
+}, []);
 
   return (
     <>
@@ -147,37 +153,38 @@ const Projects = () => {
                   <CAvatar size="md" src={item.avatar} />
                 </CTableDataCell>
                 <CTableDataCell width={500}>
-                  <div>{item.Name}</div>
+                  <div>{item.projectName}</div>
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
-                  <div>{statusMap[item.Status]} </div>
+                <div>{statusMap[1]} </div>
+                  {/* <div>{statusMap[item.Status]} </div> */}
                 </CTableDataCell>
                 <CTableDataCell>
                   <div className="d-flex justify-content-between text-nowrap">
                     <div className="fw-semibold">
-                      {Math.floor(item.AccumulatedAmount / item.Goal * 100)}
+                      {Math.floor(item.accumulatedAmount / item.goal * 100)}
                       %
                     </div>
                     <div className="ms-3">
                       <small className="text-body-secondary">
-                        {numeral(item.AccumulatedAmount).format('0,0')}/{numeral(item.Goal).format('0,0')}
+                        {numeral(item.accumulatedAmount).format('0,0')}/{numeral(item.goal).format('0,0')}
                       </small>
                     </div>
                   </div>
                   <CProgress
                     thin
                     color={
-                      item.AccumulatedAmount / item.Goal >= 0.8
+                      item.accumulatedAmount / item.goal >= 0.8
                         ? 'danger'
-                        : item.AccumulatedAmount / item.Goal >= 0.5
+                        : item.accumulatedAmount / item.goal >= 0.5
                           ? 'warning'
                           : 'success'
                     }
-                    value={(item.AccumulatedAmount / item.Goal) >= 100 ? 100 : (item.AccumulatedAmount / item.Goal) * 100}
+                    value={(item.accumulatedAmount / item.goal) >= 100 ? 100 : (item.accumulatedAmount / item.goal) * 100}
                   />
                 </CTableDataCell>
                 <CTableDataCell>
-                  <div className="fw-semibold text-nowrap text-center"> {calculateRemainingDays(item.ExpireDate, item.Date) < 0 ? 0 : calculateRemainingDays(item.ExpireDate, item.Date)}天</div>
+                  <div className="fw-semibold text-nowrap text-center"> {calculateRemainingDays(item.expireDate, item.date) < 0 ? 0 : calculateRemainingDays(item.expireDate, item.date)}天</div>
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   <CButton
@@ -187,12 +194,13 @@ const Projects = () => {
                       setAlter(true)
                       setProjectContext([
                         item.avatar,
-                        item.name,
+                        item.projectName,
                         item.Description,
-                        item.Status,
-                        item.Goal,
-                        item.Date,
-                        item.ExpireDate,
+                        // item.Status,
+                        1,
+                        item.goal,
+                        item.date,
+                        item.expireDate,
                       ])
                     }}
                   >
@@ -201,8 +209,8 @@ const Projects = () => {
                   </CButton>
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
-                  <CButton onClick={() => productTableClick(item.ID)}>
-                    {productVisible[item.ID] ? (
+                  <CButton onClick={() => productTableClick(item.projectId)}>
+                    {productVisible[item.projectId] ? (
                       <CIcon size="xl" icon={cilArrowCircleTop} />
                     ) : (
                       <CIcon size="xl" icon={cilArrowCircleBottom} />
@@ -213,7 +221,7 @@ const Projects = () => {
               {
 // #region products-----------------------------------------------------------------------------------
               }
-              {productVisible[item.ID] && (
+              {productVisible[item.projectId] && (
                 <React.Fragment>
                   <CTableRow>
                     <CTableHeaderCell className="bg-body-tertiary text-center">
@@ -238,7 +246,7 @@ const Projects = () => {
                         onClick={() => {
                           setVisibleProductLg(!visibleProductLg)
                           setAlter(false)
-                          setProductContext([item.ID])
+                          setProductContext([item.projectId])
                         }}
                       >
                         <CIcon icon={cilPlus} className="me-2" />
@@ -255,7 +263,8 @@ const Projects = () => {
                         <div>{product.PdName}</div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary text-center">
-                        <div>{statusMap[product.Status]} </div>
+                      <div>{statusMap[1]} </div>
+                        {/* <div>{statusMap[product.Status]} </div> */}
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary">
                         <div className=" d-flex justify-content-between text-nowrap">
@@ -301,7 +310,7 @@ const Projects = () => {
                             setVisibleProductLg(!visibleProductLg)
                             setAlter(true)
                             setProductContext([
-                              item.ID,
+                              item.projectId,
                               product.Thumbnail,
                               product.PdName,
                               product.PdDesc,
