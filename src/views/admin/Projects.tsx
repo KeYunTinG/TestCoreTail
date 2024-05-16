@@ -1,6 +1,7 @@
 import React, { useState, useEffect }from 'react'
 import numeral from 'numeral'
 import { getProjects } from '../../api/Projects'
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const projectUrl = import.meta.env.VITE_PROJECT_IMG_URL;
 const productUrl = import.meta.env.VITE_PRODUCT_IMG_URL;
 import {
@@ -196,10 +197,11 @@ const Projects = () => {
                       setVisibleProjectLg(!visibleProjectLg)
                       setAlter(true)
                       setProjectContext([
+                        item.projectId,
                         //item.thumbnail,
                         projectUrl+item.thumbnail,
                         item.projectName,
-                        item.Description,
+                        item.description,
                         // item.Status,
                         1,
                         item.goal,
@@ -387,7 +389,7 @@ const Projects = () => {
         </CModalHeader>
         <CModalBody>
           <CCardBody className="p-4">
-            <CForm>
+            <CForm action={alterText ?`${baseUrl}/api/project/${projectContext[0]}`:`${baseUrl}/api/project/`} method={alterText ? "put" : "post"}>
               <CInputGroup className="mb-3">
                 <input type="file" accept="image/*" onChange={handleFileChange} />
                 {alterText ? (
@@ -399,7 +401,7 @@ const Projects = () => {
                     />
                   ) : (
                     <img
-                      src={projectContext[0]}
+                      src={projectContext[1]}
                       alt="Selected"
                       style={{ maxWidth: '100%', maxHeight: '100%' }}
                     />
@@ -414,17 +416,17 @@ const Projects = () => {
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>專案名稱</CInputGroupText>
-                <CFormInput required="required" defaultValue={alterText ? projectContext[1] : ''} />
+                <CFormInput required="required" name="projectName" defaultValue={alterText ? projectContext[2] : ''} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>專案內容</CInputGroupText>
-                <CFormInput required="required" defaultValue={alterText ? projectContext[2] : ''} />
+                <CFormInput required="required" name="description" defaultValue={alterText ? projectContext[3] : ''} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>狀態</CInputGroupText>
                 <CFormSelect
                   aria-label="Default select example"
-                  defaultValue={alterText ? projectContext[3] : 2}
+                  defaultValue={alterText ? projectContext[4] : 2}
                 >
                   <option value="1">募資中</option>
                   <option value="2">下架</option>
@@ -432,14 +434,15 @@ const Projects = () => {
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>募資目標</CInputGroupText>
-                <CFormInput required="required" defaultValue={alterText ? projectContext[4] : ''} />
+                <CFormInput required="required"  name="goal" defaultValue={alterText ? projectContext[5] : ''} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>開始時間</CInputGroupText>
                 <CFormInput
                   type="date"
                   required="required"
-                  defaultValue={alterText ? projectContext[5] : ''}
+                  name="date"
+                  defaultValue={alterText ? projectContext[6] : ''}
                 />
               </CInputGroup>
               <CInputGroup className="mb-4">
@@ -447,9 +450,12 @@ const Projects = () => {
                 <CFormInput
                   type="date"
                   required="required"
-                  defaultValue={alterText ? projectContext[6] : ''}
+                  name="expireDate"
+                  defaultValue={alterText ? projectContext[7] : ''}
                 />
               </CInputGroup>
+              <CFormInput required="required"  name="roleId" defaultValue="2" />
+              <CFormInput required="required"  name="memberId" defaultValue="41" />
               <div className="d-grid">
                 <CButton
                   type="submit"

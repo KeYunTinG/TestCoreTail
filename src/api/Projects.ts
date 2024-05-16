@@ -1,9 +1,9 @@
 //const baseURL = import.meta.env.baseURL;
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 //const baseURL = 'https://localhost:7144'
 export const getProjects = async () => {
   try {
-    const response = await fetch(`${baseURL}/api/Project`);
+    const response = await fetch(`${baseUrl}/api/Project`);
     if (!response.ok) {
       throw new Error(`Failed to fetch projects: ${response.status} ${response.statusText}`);
     }
