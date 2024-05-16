@@ -110,7 +110,7 @@ const handlePostSubmit = (event) => {
   
   // 收集表單數據
   const formData = new FormData(event.target);
-  
+  formData.delete('projectId');
   // 準備要發送的數據，可以對數據進行進一步處理或驗證
   const jsonData = {};
   formData.forEach((value, key) => {
@@ -442,7 +442,7 @@ const handlePutSubmit = (event) => {
         //#endregion
       }
       {
-        //#region 方案選單
+//#region 方案選單-----------------------------------------------------------------------------------
       }
       <CModal
         fullscreen="lg"
@@ -526,6 +526,7 @@ const handlePutSubmit = (event) => {
               {/* needtofix */}
               <CFormInput type="hidden" required="required"  name="roleId" defaultValue="2" />
               <CFormInput type="hidden" required="required"  name="memberId" defaultValue="41" />
+              <CFormInput type="hidden" name="id" value={projectContext[6]} /> 
               {/* needtofix */}
               <div className="d-grid">
                 <CButton
