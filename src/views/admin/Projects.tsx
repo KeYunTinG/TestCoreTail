@@ -1,7 +1,8 @@
 import React, { useState, useEffect }from 'react'
 import numeral from 'numeral'
 import { getProjects } from '../../api/Projects'
-
+const projectUrl = import.meta.env.VITE_PROJECT_IMG_URL;
+const productUrl = import.meta.env.VITE_PRODUCT_IMG_URL;
 import {
   CAvatar,
   CButton,
@@ -33,6 +34,7 @@ import {
   cilColorBorder,
   cilClipboard,
 } from '@coreui/icons'
+import avatar1 from '../../assets/images/avatars/1.jpg'
 //計算剩餘天數
 function calculateRemainingDays(expireDate: string, startDate: string): number {
   const endDate: Date = new Date(expireDate);
@@ -150,7 +152,8 @@ const Projects = () => {
             <React.Fragment key={index}>
               <CTableRow>
                 <CTableDataCell className="text-center">
-                  <CAvatar size="md" src={item.avatar} />
+                  {/* <CAvatar size="md" src={item.thumbnail} /> */}
+                  <CAvatar size="md" src={projectUrl+item.thumbnail} />
                 </CTableDataCell>
                 <CTableDataCell width={500}>
                   <div>{item.projectName}</div>
@@ -175,10 +178,10 @@ const Projects = () => {
                     thin
                     color={
                       item.accumulatedAmount / item.goal >= 0.8
-                        ? 'danger'
+                        ? 'success'
                         : item.accumulatedAmount / item.goal >= 0.5
                           ? 'warning'
-                          : 'success'
+                          : 'danger'
                     }
                     value={(item.accumulatedAmount / item.goal) >= 100 ? 100 : (item.accumulatedAmount / item.goal) * 100}
                   />
@@ -193,7 +196,8 @@ const Projects = () => {
                       setVisibleProjectLg(!visibleProjectLg)
                       setAlter(true)
                       setProjectContext([
-                        item.avatar,
+                        //item.thumbnail,
+                        projectUrl+item.thumbnail,
                         item.projectName,
                         item.Description,
                         // item.Status,
@@ -284,10 +288,10 @@ const Projects = () => {
                           thin
                           color={
                             (product.quantity - product.inventory) / product.quantity >= 0.8
-                              ? 'danger'
+                              ? 'success'
                               : (product.quantity - product.inventory)/ product.quantity >= 0.5
                                 ? 'warning'
-                                : 'success'
+                                : 'danger'
                           }
                           value={
                             ((product.quantity - product.inventory)/ product.quantity) * 100
@@ -311,7 +315,8 @@ const Projects = () => {
                             setAlter(true)
                             setProductContext([
                               item.projectId,
-                              product.thumbnail,
+                              //product.thumbnail,
+                              productUrl+ product.thumbnail,
                               product.productName,
                               product.productDescription,
                               // product.Status,
