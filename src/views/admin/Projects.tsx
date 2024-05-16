@@ -104,6 +104,75 @@ const Projects = () => {
 
   fetchProjects();
 }, []);
+//POST
+const handlePostSubmit = (event) => {
+  event.preventDefault(); // 阻止表單默認的提交行為
+  
+  // 收集表單數據
+  const formData = new FormData(event.target);
+  
+  // 準備要發送的數據，可以對數據進行進一步處理或驗證
+  const jsonData = {};
+  formData.forEach((value, key) => {
+    jsonData[key] = value;
+  });
+  // 使用 AJAX 或 Fetch API 將數據發送到伺服器
+  fetch(`${baseUrl}/api/project`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json' // 指定 Content-Type 為 application/json
+    },
+    body: JSON.stringify(jsonData) // 轉換數據為 JSON 字符串並作為請求體
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('網路請求失敗！');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('成功提交數據：', data);
+    // 處理成功響應
+  })
+  .catch(error => {
+    console.error('提交數據時發生錯誤：', error);
+    // 處理錯誤情況
+  });
+};
+const handlePutSubmit = (event) => {
+  event.preventDefault(); // 阻止表單默認的提交行為
+  
+  // 收集表單數據
+  const formData = new FormData(event.target);
+  
+  // 準備要發送的數據，可以對數據進行進一步處理或驗證
+  const jsonData = {};
+  formData.forEach((value, key) => {
+    jsonData[key] = value;
+  });
+  // 使用 AJAX 或 Fetch API 將數據發送到伺服器
+  fetch(`${baseUrl}/api/project`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json' // 指定 Content-Type 為 application/json
+    },
+    body: JSON.stringify(jsonData) // 轉換數據為 JSON 字符串並作為請求體
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('網路請求失敗！');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('成功提交數據：', data);
+    // 處理成功響應
+  })
+  .catch(error => {
+    console.error('提交數據時發生錯誤：', error);
+    // 處理錯誤情況
+  });
+};
 
   return (
     <>
@@ -389,7 +458,7 @@ const Projects = () => {
         </CModalHeader>
         <CModalBody>
           <CCardBody className="p-4">
-            <CForm action={alterText ?`${baseUrl}/api/project/${projectContext[0]}`:`${baseUrl}/api/project/`} method={alterText ? "put" : "post"}>
+            <CForm onSubmit={alterText ?(e) => handlePutSubmit(e):(e) => handlePostSubmit(e)}>
               <CInputGroup className="mb-3">
                 <input type="file" accept="image/*" onChange={handleFileChange} />
                 {alterText ? (
@@ -454,8 +523,10 @@ const Projects = () => {
                   defaultValue={alterText ? projectContext[7] : ''}
                 />
               </CInputGroup>
-              <CFormInput required="required"  name="roleId" defaultValue="2" />
-              <CFormInput required="required"  name="memberId" defaultValue="41" />
+              {/* needtofix */}
+              <CFormInput type="hidden" required="required"  name="roleId" defaultValue="2" />
+              <CFormInput type="hidden" required="required"  name="memberId" defaultValue="41" />
+              {/* needtofix */}
               <div className="d-grid">
                 <CButton
                   type="submit"
@@ -465,7 +536,7 @@ const Projects = () => {
                   {alterText ? '修改專案' : '建立專案'}
                 </CButton>
               </div>
-            </CForm>
+            </CForm> 
           </CCardBody>
         </CModalBody>
       </CModal>
