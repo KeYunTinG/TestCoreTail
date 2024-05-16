@@ -92,7 +92,7 @@ const Projects = () => {
         }))
       );
 
-      console.log('fetchedProjects:', fetchedProjects); // 確認資料是否成功加載
+      //console.log('fetchedProjects:', fetchedProjects); // 確認資料是否成功加載
     } catch (error) {
       // 處理錯誤
       console.error('Error fetching projects:', error);
@@ -254,13 +254,13 @@ const Projects = () => {
                       </CButton>
                     </CTableHeaderCell>
                   </CTableRow>
-                  {item.Products.map((product, productIndex) => (
+                  {item.products.map((product, productIndex) => (
                     <CTableRow key={`product-${index}-${productIndex}`}>
                       <CTableDataCell className="bg-body-secondary text-center">
                         <div>{productIndex + 1}</div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary">
-                        <div>{product.PdName}</div>
+                        <div>{product.productName}</div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary text-center">
                       <div>{statusMap[1]} </div>
@@ -270,35 +270,35 @@ const Projects = () => {
                         <div className=" d-flex justify-content-between text-nowrap">
                           <div className="fw-semibold">
                             {Math.floor(
-                              ((product.Quantity - product.Inventory) / product.Quantity) * 100,
+                              ((product.quantity - product.inventory) / product.quantity) * 100,
                             )}
                             %
                           </div>
                           <div className="ms-3">
                             <small className="text-body-secondary">
-                              {product.Quantity - product.Inventory}/{product.Quantity}
+                              {product.quantity - product.inventory}/{product.quantity}
                             </small>
                           </div>
                         </div>
                         <CProgress
                           thin
                           color={
-                            (product.Quantity - product.Inventory) / product.Quantity >= 0.8
+                            (product.quantity - product.inventory) / product.quantity >= 0.8
                               ? 'danger'
-                              : (product.Quantity - product.Inventory)/ product.Quantity >= 0.5
+                              : (product.quantity - product.inventory)/ product.quantity >= 0.5
                                 ? 'warning'
                                 : 'success'
                           }
                           value={
-                            ((product.Quantity - product.Inventory)/ product.Quantity) * 100
+                            ((product.quantity - product.inventory)/ product.quantity) * 100
                           }
                         />
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary text-center">
-                        <div>{calculateRemainingDays(product.ExpireDate, product.Date) < 0 ? 0 : calculateRemainingDays(product.ExpireDate, product.Date)}天</div>
+                        <div>{calculateRemainingDays(product.expireDate, product.date) < 0 ? 0 : calculateRemainingDays(product.expireDate, product.date)}天</div>
                       </CTableDataCell>
                       <CTableDataCell className="bg-body-secondary text-center">
-                        <div>{product.Inventory}</div>
+                        <div>{product.inventory}</div>
                       </CTableDataCell>
                       <CTableDataCell
                         className="bg-body-secondary text-center"
@@ -311,14 +311,15 @@ const Projects = () => {
                             setAlter(true)
                             setProductContext([
                               item.projectId,
-                              product.Thumbnail,
-                              product.PdName,
-                              product.PdDesc,
-                              product.Status,
-                              product.Price,
-                              product.Inventory,
-                              product.Date,
-                              product.ExpireDate,
+                              product.thumbnail,
+                              product.productName,
+                              product.productDescription,
+                              // product.Status,
+                              1,
+                              product.price,
+                              product.inventory,
+                              product.date,
+                              product.expireDate,
                             ])
                           }}
                         >

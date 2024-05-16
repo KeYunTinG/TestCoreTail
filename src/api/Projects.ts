@@ -1,5 +1,6 @@
 //const baseURL = import.meta.env.baseURL;
-const baseURL = 'https://localhost:7144'
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+//const baseURL = 'https://localhost:7144'
 export const getProjects = async () => {
   try {
     const response = await fetch(`${baseURL}/api/Project`);
