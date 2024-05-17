@@ -44,6 +44,7 @@ function calculateRemainingDays(expireDate: string, startDate: string): number {
   const remainingDays: number = Math.ceil(timeDiff / (1000 * 3600 * 24));
   return remainingDays;
 }
+const date = new Date()
 const Projects = () => {
   //const [visible, setVisible] = useState(false)
   // const [modalText, setModalText] = useState('')
@@ -104,7 +105,8 @@ const Projects = () => {
 
   fetchProjects();
 }, []);
-//POST
+
+//POST------------------------------------------------------
 const handlePostSubmit = (event) => {
   event.preventDefault(); // 阻止表單默認的提交行為
   
@@ -139,6 +141,7 @@ const handlePostSubmit = (event) => {
     // 處理錯誤情況
   });
 };
+//PUT------------------------------------------------------
 const handlePutSubmit = (event) => {
   event.preventDefault(); // 阻止表單默認的提交行為
   
@@ -150,8 +153,9 @@ const handlePutSubmit = (event) => {
   formData.forEach((value, key) => {
     jsonData[key] = value;
   });
+  const id = jsonData['id'];
   // 使用 AJAX 或 Fetch API 將數據發送到伺服器
-  fetch(`${baseUrl}/api/project`, {
+  fetch(`${baseUrl}/api/project/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json' // 指定 Content-Type 為 application/json
@@ -257,7 +261,7 @@ const handlePutSubmit = (event) => {
                   />
                 </CTableDataCell>
                 <CTableDataCell>
-                  <div className="fw-semibold text-nowrap text-center"> {calculateRemainingDays(item.expireDate, item.date) < 0 ? 0 : calculateRemainingDays(item.expireDate, item.date)}天</div>
+                  <div className="fw-semibold text-nowrap text-center"> {calculateRemainingDays(item.expireDate, date) < 0 ? 0 : calculateRemainingDays(item.expireDate, date)}天</div>
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   <CButton
@@ -526,7 +530,7 @@ const handlePutSubmit = (event) => {
               {/* needtofix */}
               <CFormInput type="hidden" required="required"  name="roleId" defaultValue="2" />
               <CFormInput type="hidden" required="required"  name="memberId" defaultValue="41" />
-              <CFormInput type="hidden" name="id" value={projectContext[6]} /> 
+              <CFormInput type="hidden" name="id" value={projectContext[0]} /> 
               {/* needtofix */}
               <div className="d-grid">
                 <CButton
