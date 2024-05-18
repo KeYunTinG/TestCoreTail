@@ -21,6 +21,7 @@ import {
   CModalTitle,
   CModalHeader,
   CModalBody,
+  CModalFooter,
   CForm,
   CFormInput,
   CInputGroup,
@@ -35,7 +36,6 @@ import {
   cilColorBorder,
   cilClipboard,
 } from '@coreui/icons'
-import avatar1 from '../../assets/images/avatars/1.jpg'
 //計算剩餘天數
 function calculateRemainingDays(expireDate: string, startDate: string): number {
   const endDate: Date = new Date(expireDate);
@@ -46,16 +46,17 @@ function calculateRemainingDays(expireDate: string, startDate: string): number {
 }
 const date = new Date()
 const Projects = () => {
-  //const [visible, setVisible] = useState(false)
-  // const [modalText, setModalText] = useState('')
-  const [visibleProjectLg, setVisibleProjectLg] = useState(false)
-  const [visibleProductLg, setVisibleProductLg] = useState(false)
-  const [projectContext, setProjectContext] = useState({})
-  const [productContext, setProductContext] = useState({})
+  const [visibleModal, setModalVisible] = useState(false);
+  const [modalText, setModalText] = useState('');
+  const [visibleProjectLg, setvisibleProjectModal] = useState(false);
+  const [visibleProductLg, setVisibleProductModal] = useState(false);
+  const [projectContext, setProjectContext] = useState({});
+  const [productContext, setProductContext] = useState({});
   const [productVisible, setProductVisible] = useState<{ [key: string]: boolean }>({});
-  const [selectedImage, setSelectedImage] = useState(null)
+  const [selectedImage, setSelectedImage] = useState(null);
   const [projects, setProjects] = useState(null);
-   //下拉式選單
+  const [formData, setFormData] = useState({});
+  //下拉式選單
   const productTableClick = (itemId: string) => {
     setProductVisible((prevState) => ({
       ...prevState,
@@ -83,22 +84,19 @@ const Projects = () => {
       }
     }
   }
-   //載入api
+//載入api
  useEffect(() => {
   const fetchProjects = async () => {
     try {
       const fetchedProjects = await getProjects();
-
       setProjects(
         fetchedProjects.map((project) => ({
           ...project,
           isEdit: false,
         }))
       );
-
       //console.log('fetchedProjects:', fetchedProjects); // 確認資料是否成功加載
     } catch (error) {
-      // 處理錯誤
       console.error('Error fetching projects:', error);
     }
   };
@@ -106,78 +104,46 @@ const Projects = () => {
   fetchProjects();
 }, []);
 
-//POST------------------------------------------------------
-const handlePostSubmit = (event) => {
+//POST/PUT Modal------------------------------------------------------
+const handleFormSubmit = (event) => {
   event.preventDefault(); // 阻止表單默認的提交行為
-  
-  // 收集表單數據
-  const formData = new FormData(event.target);
-  formData.delete('projectId');
-  // 準備要發送的數據，可以對數據進行進一步處理或驗證
-  const jsonData = {};
-  formData.forEach((value, key) => {
-    jsonData[key] = value;
-  });
-  // 使用 AJAX 或 Fetch API 將數據發送到伺服器
-  fetch(`${baseUrl}/api/project`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json' // 指定 Content-Type 為 application/json
-    },
-    body: JSON.stringify(jsonData) // 轉換數據為 JSON 字符串並作為請求體
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('網路請求失敗！');
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('成功提交數據：', data);
-    // 處理成功響應
-  })
-  .catch(error => {
-    console.error('提交數據時發生錯誤：', error);
-    // 處理錯誤情況
-  });
-};
-//PUT------------------------------------------------------
-const handlePutSubmit = (event) => {
-  event.preventDefault(); // 阻止表單默認的提交行為
-  
-  // 收集表單數據
-  const formData = new FormData(event.target);
-  
-  // 準備要發送的數據，可以對數據進行進一步處理或驗證
-  const jsonData = {};
-  formData.forEach((value, key) => {
-    jsonData[key] = value;
-  });
-  const id = jsonData['id'];
-  // 使用 AJAX 或 Fetch API 將數據發送到伺服器
-  fetch(`${baseUrl}/api/project/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json' // 指定 Content-Type 為 application/json
-    },
-    body: JSON.stringify(jsonData) // 轉換數據為 JSON 字符串並作為請求體
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('網路請求失敗！');
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('成功提交數據：', data);
-    // 處理成功響應
-  })
-  .catch(error => {
-    console.error('提交數據時發生錯誤：', error);
-    // 處理錯誤情況
-  });
-};
 
+  const formData = new FormData(event.target); // 收集表單數據
+
+  // 準備要發送的數據，可以對數據進行進一步處理或驗證
+  const jsonData = {};
+  formData.forEach((value, key) => {
+    jsonData[key] = value;
+  });
+  setFormData(jsonData);
+  setModalText(alterText ? '您確認要修改這個專案嗎？' : '您確認要建立這個專案嗎？');
+  setModalVisible(true);
+};
+const handleConfirmSubmit = () => {
+  const url = alterText ? `${baseUrl}/api/project/${formData.id}` : `${baseUrl}/api/project`;
+  const method = alterText ? 'PUT' : 'POST';
+  fetch(url, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json', // 指定 Content-Type 為 application/json
+    },
+    body: JSON.stringify(formData), // 轉換數據為 JSON 字符串並作為請求體
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('網路請求失敗！');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('成功提交數據：', data);
+      setModalVisible(false); // 確認表單
+      setvisibleProjectModal(false); // 主表單
+    })
+    .catch((error) => {
+      console.error('提交數據時發生錯誤：', error);
+    });
+};
   return (
     <>
       {
@@ -188,7 +154,7 @@ const handlePutSubmit = (event) => {
           <CButton
             color="primary"
             onClick={() => {
-              setVisibleProjectLg(!visibleProjectLg)
+              setvisibleProjectModal(!visibleProjectLg)
               setAlter(false)
             }}
             style={{ marginRight: '10px' }}
@@ -267,7 +233,7 @@ const handlePutSubmit = (event) => {
                   <CButton
                     color="grey"
                     onClick={() => {
-                      setVisibleProjectLg(!visibleProjectLg)
+                      setvisibleProjectModal(!visibleProjectLg)
                       setAlter(true)
                       setProjectContext([
                         item.projectId,
@@ -298,7 +264,7 @@ const handlePutSubmit = (event) => {
                 </CTableDataCell>
               </CTableRow>
               {
-// #region products-----------------------------------------------------------------------------------
+// #region 產品-----------------------------------------------------------------------------------
               }
               {productVisible[item.projectId] && (
                 <React.Fragment>
@@ -323,7 +289,7 @@ const handlePutSubmit = (event) => {
                       <CButton
                         color="primary"
                         onClick={() => {
-                          setVisibleProductLg(!visibleProductLg)
+                          setVisibleProductModal(!visibleProductLg)
                           setAlter(false)
                           setProductContext([item.projectId])
                         }}
@@ -386,7 +352,7 @@ const handlePutSubmit = (event) => {
                         <CButton
                           color="Primary"
                           onClick={() => {
-                            setVisibleProductLg(!visibleProductLg)
+                            setVisibleProductModal(!visibleProductLg)
                             setAlter(true)
                             setProductContext([
                               item.projectId,
@@ -422,26 +388,26 @@ const handlePutSubmit = (event) => {
         //#endregion
       }
       {
-//#region msgbox-----------------------------------------------------------------------------------
+//#region Modal-----------------------------------------------------------------------------------
       }
-      {/* <CModal
-        visible={visible}
-        onClose={() => setVisible(false)}
+      <CModal
+        visible={visibleModal}
+        onClose={() => setModalVisible(false)}
         aria-labelledby="LiveDemoExampleLabel"
       >
-        <CModalHeader onClose={() => setVisible(false)}>
+        <CModalHeader onClose={() => setModalVisible(false)}>
           <CModalTitle id="LiveDemoExampleLabel">提示</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <p>{modalText}</p>
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setVisible(false)}>
-            Close
+          <CButton color="primary"onClick={handleConfirmSubmit}>確認</CButton>
+          <CButton color="secondary" onClick={() => setModalVisible(false)}>
+            取消
           </CButton>
-          <CButton color="primary">Save changes</CButton>
         </CModalFooter>
-      </CModal> */}
+      </CModal>
       {
         //#endregion
       }
@@ -452,7 +418,7 @@ const handlePutSubmit = (event) => {
         fullscreen="lg"
         visible={visibleProjectLg}
         onClose={() => {
-          setVisibleProjectLg(false)
+          setvisibleProjectModal(false)
           setSelectedImage('')
         }}
         aria-labelledby="FullscreenExample4"
@@ -462,7 +428,7 @@ const handlePutSubmit = (event) => {
         </CModalHeader>
         <CModalBody>
           <CCardBody className="p-4">
-            <CForm onSubmit={alterText ?(e) => handlePutSubmit(e):(e) => handlePostSubmit(e)}>
+            <CForm onSubmit={(e) => handleFormSubmit(e)}>
               <CInputGroup className="mb-3">
                 <input type="file" accept="image/*" onChange={handleFileChange} />
                 {alterText ? (
@@ -555,7 +521,7 @@ const handlePutSubmit = (event) => {
         fullscreen="lg"
         visible={visibleProductLg}
         onClose={() => {
-          setVisibleProductLg(false)
+          setVisibleProductModal(false)
           setSelectedImage('')
         }}
         aria-labelledby="FullscreenExample4"
