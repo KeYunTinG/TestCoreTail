@@ -52,6 +52,7 @@ const Projects = () => {
   const [visibleProductLg, setVisibleProductModal] = useState(false);
   const [projectContext, setProjectContext] = useState({});
   const [productContext, setProductContext] = useState({});
+  const [projectDemo,setProjectDemo] = useState({});
   const [productVisible, setProductVisible] = useState<{ [key: string]: boolean }>({});
   const [selectedImage, setSelectedImage] = useState(null);
   const [projects, setProjects] = useState(null);
@@ -419,6 +420,7 @@ const handleConfirmSubmit = () => {
         visible={visibleProjectLg}
         onClose={() => {
           setvisibleProjectModal(false)
+          setProjectDemo(['','',2,'','',''])
           setSelectedImage('')
         }}
         aria-labelledby="FullscreenExample4"
@@ -430,6 +432,7 @@ const handleConfirmSubmit = () => {
           <CCardBody className="p-4">
             <CForm onSubmit={(e) => handleFormSubmit(e)}>
               <CInputGroup className="mb-3">
+
                 <input type="file" accept="image/*" onChange={handleFileChange} />
                 {alterText ? (
                   selectedImage ? (
@@ -453,19 +456,20 @@ const handleConfirmSubmit = () => {
                   />
                 ) : '')}
               </CInputGroup>
+               <button type="button" style={{marginBottom:20}} onClick={() => {setProjectDemo(["Marco的爬蟲課","把這邊拍下來",2,8000,'2024-05-01','2024-06-30'])}}>由於時間的關係我們這邊使用Demo鍵</button> 
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>專案名稱</CInputGroupText>
-                <CFormInput required="required" name="projectName" defaultValue={alterText ? projectContext[2] : ''} />
+                <CFormInput required="required" name="projectName" defaultValue={alterText ? projectContext[2] : projectDemo[0]} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>專案內容</CInputGroupText>
-                <CFormInput required="required" name="description" defaultValue={alterText ? projectContext[3] : ''} />
+                <CFormInput required="required" name="description" defaultValue={alterText ? projectContext[3] : projectDemo[1]} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>狀態</CInputGroupText>
                 <CFormSelect
                   aria-label="Default select example"
-                  defaultValue={alterText ? projectContext[4] : 2}
+                  defaultValue={alterText ? projectContext[4] : projectDemo[2]}
                 >
                   <option value="1">募資中</option>
                   <option value="2">下架</option>
@@ -473,7 +477,7 @@ const handleConfirmSubmit = () => {
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>募資目標</CInputGroupText>
-                <CFormInput required="required"  name="goal" defaultValue={alterText ? projectContext[5] : ''} />
+                <CFormInput required="required"  name="goal" defaultValue={alterText ? projectContext[5] : projectDemo[3]} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>開始時間</CInputGroupText>
@@ -481,7 +485,7 @@ const handleConfirmSubmit = () => {
                   type="date"
                   required="required"
                   name="date"
-                  defaultValue={alterText ? projectContext[6] : ''}
+                  defaultValue={alterText ? projectContext[6] : projectDemo[4]}
                 />
               </CInputGroup>
               <CInputGroup className="mb-4">
@@ -490,7 +494,7 @@ const handleConfirmSubmit = () => {
                   type="date"
                   required="required"
                   name="expireDate"
-                  defaultValue={alterText ? projectContext[7] : ''}
+                  defaultValue={alterText ? projectContext[7] : projectDemo[5]}
                 />
               </CInputGroup>
               {/* needtofix */}
