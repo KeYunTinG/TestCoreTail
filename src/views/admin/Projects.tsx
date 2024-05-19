@@ -53,6 +53,7 @@ const Projects = () => {
   const [projectContext, setProjectContext] = useState({});
   const [productContext, setProductContext] = useState({});
   const [projectDemo,setProjectDemo] = useState({});
+  const [productDemo,setProductDemo] = useState({});
   const [productVisible, setProductVisible] = useState<{ [key: string]: boolean }>({});
   const [selectedImage, setSelectedImage] = useState(null);
   const [projects, setProjects] = useState(null);
@@ -77,7 +78,10 @@ const Projects = () => {
         const reader = new FileReader()
         reader.onload = (e) => {
           const contents = e.target.result
-          setSelectedImage(contents) // 更新狀態以顯示所選圖像
+          setSelectedImage({
+            file: file,
+            preview: contents // 用於顯示預覽圖像
+          }); // 更新狀態以顯示所選圖像
         }
         reader.readAsDataURL(file) // 以 Data URL 格式讀取檔案內容
       } else {
@@ -111,18 +115,34 @@ const handleFormSubmit = (event) => {
 
   const formData = new FormData(event.target); // 收集表單數據
 
+  // if (selectedImage) {
+  //   formData.append('Image', selectedImage);
+  // }
   // 準備要發送的數據，可以對數據進行進一步處理或驗證
   const jsonData = {};
   formData.forEach((value, key) => {
     jsonData[key] = value;
   });
   setFormData(jsonData);
-  setModalText(alterText ? '您確認要修改這個專案嗎？' : '您確認要建立這個專案嗎？');
+  setModalText(
+    visibleProductLg
+      ? (alterText ? '您確認要修改這個產品嗎？' : '您確認要建立這個產品嗎？')
+      : (alterText ? '您確認要修改這個專案嗎？' : '您確認要建立這個專案嗎？')
+  );
   setModalVisible(true);
 };
 const handleConfirmSubmit = () => {
-  const url = alterText ? `${baseUrl}/api/project/${formData.id}` : `${baseUrl}/api/project`;
+  const url = (
+    visibleProductLg 
+    ?(alterText ? `${baseUrl}/api/product/${formData.id}` : `${baseUrl}/api/product`)
+    :(alterText ? `${baseUrl}/api/project/${formData.id}` : `${baseUrl}/api/project`)
+  );
   const method = alterText ? 'PUT' : 'POST';
+  
+  console.log('URL:', url);
+  console.log('Method:', method);
+  console.log('Data being sent:', formData);
+
   fetch(url, {
     method: method,
     headers: {
@@ -132,14 +152,18 @@ const handleConfirmSubmit = () => {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error('網路請求失敗！');
+        return response.text().then(text => { throw new Error(text) });
       }
       return response.json();
     })
     .then((data) => {
       console.log('成功提交數據：', data);
       setModalVisible(false); // 確認表單
-      setvisibleProjectModal(false); // 主表單
+      if (visibleProductLg) {
+        setVisibleProductModal(false); 
+      } else {
+        setvisibleProjectModal(false);
+      }
     })
     .catch((error) => {
       console.error('提交數據時發生錯誤：', error);
@@ -357,6 +381,7 @@ const handleConfirmSubmit = () => {
                             setAlter(true)
                             setProductContext([
                               item.projectId,
+                              product.productId,
                               //product.thumbnail,
                               productUrl+ product.thumbnail,
                               product.productName,
@@ -364,6 +389,7 @@ const handleConfirmSubmit = () => {
                               // product.Status,
                               1,
                               product.price,
+                              product.quantity,
                               product.inventory,
                               product.date,
                               product.expireDate,
@@ -437,7 +463,7 @@ const handleConfirmSubmit = () => {
                 {alterText ? (
                   selectedImage ? (
                     <img
-                      src={selectedImage}
+                      src={selectedImage.preview}
                       alt="Selected"
                       style={{ maxWidth: '100%', maxHeight: '100%' }}
                     />
@@ -450,13 +476,13 @@ const handleConfirmSubmit = () => {
                   )
                 ) : (selectedImage ? (
                   <img
-                    src={selectedImage}
+                    src={selectedImage.preview}
                     alt="Selected"
                     style={{ maxWidth: '100%', maxHeight: '100%' }}
                   />
                 ) : '')}
               </CInputGroup>
-               <button type="button" style={{marginBottom:20}} onClick={() => {setProjectDemo(["Marco的爬蟲課","把這邊拍下來",2,8000,'2024-05-01','2024-06-30'])}}>由於時間的關係我們這邊使用Demo鍵</button> 
+               <button type="button" style={{marginBottom:20}} onClick={() => {setProjectDemo(["Marco的PYthon大補帖","不買你明天下午就會後悔",2,8000,'2024-05-01','2024-06-30'])}}>由於時間的關係我們這邊使用Demo鍵</button> 
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>專案名稱</CInputGroupText>
                 <CFormInput required="required" name="projectName" defaultValue={alterText ? projectContext[2] : projectDemo[0]} />
@@ -526,6 +552,7 @@ const handleConfirmSubmit = () => {
         visible={visibleProductLg}
         onClose={() => {
           setVisibleProductModal(false)
+          setProductDemo(['','',2,'','','',''])
           setSelectedImage('')
         }}
         aria-labelledby="FullscreenExample4"
@@ -535,13 +562,13 @@ const handleConfirmSubmit = () => {
         </CModalHeader>
         <CModalBody>
           <CCardBody className="p-4">
-            <CForm>
+            <CForm onSubmit={(e) => handleFormSubmit(e)}>
               <CInputGroup className="mb-3">
                 <input type="file" accept="image/*" onChange={handleFileChange} />
                 {alterText ? (
                   selectedImage ? (
                     <img
-                      src={selectedImage}
+                      src={selectedImage.preview}
                       alt="Selected"
                       style={{ maxWidth: '100%', maxHeight: '100%' }}
                     />
@@ -552,23 +579,28 @@ const handleConfirmSubmit = () => {
                       style={{ maxWidth: '100%', maxHeight: '100%' }}
                     />
                   )
-                ) : (
-                  ''
-                )}
+                ) : (selectedImage ? (
+                  <img
+                    src={selectedImage.preview}
+                    alt="Selected"
+                    style={{ maxWidth: '100%', maxHeight: '100%' }}
+                  />
+                ) : '')}
               </CInputGroup>
+              <button type="button" style={{marginBottom:20}} onClick={() => {setProductDemo(["Marco的爬蟲課","把這邊拍下來",2,8000,2,'2024-05-01','2024-06-30'])}}>由於時間的關係我們再次使用Demo鍵</button> 
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>產品名稱</CInputGroupText>
-                <CFormInput required="required" defaultValue={alterText ? productContext[2] : ''} />
+                <CFormInput required="required" name="productName" defaultValue={alterText ? productContext[3] : productDemo[0]} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>產品內容</CInputGroupText>
-                <CFormInput required="required" defaultValue={alterText ? productContext[3] : ''} />
+                <CFormInput required="required" name="productDescription" defaultValue={alterText ? productContext[4] : productDemo[1]} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>狀態</CInputGroupText>
                 <CFormSelect
                   aria-label="Default select example"
-                  defaultValue={alterText ? productContext[4] : 2}
+                  defaultValue={alterText ? productContext[5] : productDemo[2]}
                 >
                   <option value="1">募資中</option>
                   <option value="2">下架</option>
@@ -576,18 +608,23 @@ const handleConfirmSubmit = () => {
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>產品金額</CInputGroupText>
-                <CFormInput required="required" defaultValue={alterText ? productContext[5] : ''} />
+                <CFormInput required="required" name="price" defaultValue={alterText ? productContext[6] : productDemo[3]} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>庫存量</CInputGroupText>
-                <CFormInput required="required" defaultValue={alterText ? productContext[6] : ''} />
+                <CFormInput required="required" name="quantity" defaultValue={alterText ? productContext[7] : productDemo[4]} />
+              </CInputGroup>
+              <CInputGroup className="mb-3">
+                <CInputGroupText style={{ width: '25%' }}>剩餘量</CInputGroupText>
+                <CFormInput required="required" name="inventory" defaultValue={alterText ? productContext[8] : productDemo[4]} />
               </CInputGroup>
               <CInputGroup className="mb-3">
                 <CInputGroupText style={{ width: '25%' }}>開始時間</CInputGroupText>
                 <CFormInput
                   type="date"
                   required="required"
-                  defaultValue={alterText ? productContext[7] : ''}
+                  name="date"
+                  defaultValue={alterText ? productContext[9] : productDemo[5]}
                 />
               </CInputGroup>
               <CInputGroup className="mb-4">
@@ -595,9 +632,12 @@ const handleConfirmSubmit = () => {
                 <CFormInput
                   type="date"
                   required="required"
-                  defaultValue={alterText ? productContext[8] : ''}
+                  name="expireDate"
+                  defaultValue={alterText ? productContext[10] : productDemo[6]}
                 />
               </CInputGroup>
+              <CFormInput type="hidden" name="projectId" value={productContext[0]} /> 
+              <CFormInput type="hidden" name="id" value={productContext[1]} /> 
               <div className="d-grid">
                 <CButton
                   type="submit"
