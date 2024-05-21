@@ -1,4 +1,3 @@
-//const baseURL = import.meta.env.baseURL;
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 //const baseURL = 'https://localhost:7144'
 export const getProjects = async () => {

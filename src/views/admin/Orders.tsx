@@ -1,4 +1,8 @@
 import '../../../scss/tailwind.scss'
+import React, { useState, useEffect }from 'react'
+import { getProjects } from '../../api/Projects'
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const projectUrl = import.meta.env.VITE_PROJECT_IMG_URL;
 import {
   CAvatar,
   CButton,
@@ -47,45 +51,28 @@ import {
   cilPlus,
 } from '@coreui/icons'
 
-import avatar1 from '../../assets/images/avatars/1.jpg'
-import avatar2 from '../../assets/images/avatars/2.jpg'
-import avatar3 from '../../assets/images/avatars/3.jpg'
-import avatar4 from '../../assets/images/avatars/4.jpg'
-import avatar5 from '../../assets/images/avatars/5.jpg'
-import avatar6 from '../../assets/images/avatars/6.jpg'
 
 const orders = () => {
-  const ordersTable = [
-    {
-      project:
-        '【PHILIPS 黑金剛】三合一磁吸充電系列｜一秒強勁吸附，智慧溫控晶片，簡化生活快速時尚！',
-      productOrders: [
-        {
-          name: '早鳥 旗艦組',
-          price: 2990,
-          count: 2,
-        },
-        {
-          name: '早鳥 三合一充電組',
-          price: 2390,
-          count: 3,
-        },
-        {
-          name: '早鳥 行動電源組',
-          price: 1790,
-          count: 4,
-        },
-        {
-          name: '超早鳥 旗艦組',
-          price: 2850,
-          count: 7,
-        },
-      ],
-      price: 71711,
-      payment: { name: 'PayPal', icon: cibCcPaypal },
-      purchaseTime: '2024-04-11',
-    },
-  ]
+  const [projects, setProjects] = useState(null);
+  //載入api
+ useEffect(() => {
+  const fetchProjects = async () => {
+    try {
+      const fetchedProjects = await getProjects();
+      setProjects(
+        fetchedProjects.map((project) => ({
+          ...project,
+          isEdit: false,
+        }))
+      );
+      //console.log('fetchedProjects:', fetchedProjects); // 確認資料是否成功加載
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    }
+  };
+
+  fetchProjects();
+}, []);
   const callouts = [
     {
       id:1,
@@ -115,10 +102,10 @@ const orders = () => {
   ]
   return (
     <>
-        <div className="bg-gray-100">
+        <div>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:max-w-none ">
-          <h2 className="text-4xl font-bold text-gray-900">專案列表</h2>
+          <h2 className="text-4xl font-bold">專案列表</h2>
           <div className='pt-3'>
           <CButton
             color="primary"
@@ -146,22 +133,23 @@ const orders = () => {
           </CButton>
           </div>
           <div className="mt-6 space-y-12 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:space-y-0">
-            {callouts.map((callout) => (
-              <div key={callout.id} className="group relative">
-                <div className="relative h-80 w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64">
+            {projects && projects.map((item) => (
+              <div key={item.projectId} className="group relative">
+                <div className="relative h-80 w-full overflow-hidden rounded-t-lg sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64">
                   <img
-                    src={callout.imageSrc}
-                    alt={callout.imageAlt}
+                     src={projectUrl+item.thumbnail}
+                     alt={item.imageAlt}
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
-                <h3 className="mt-6 text-sm text-gray-500">
-                  <a href={callout.href}>
-                    <span className="absolute inset-0" />
-                    {callout.name}
+                <h3 className="mt-6 text-sm">
+                  <a href={item.projectId}>
+                    <div style={{height:48}}>
+                  <p className="text-base font-semibold line-clamp">{item.projectName}</p>
+                  </div>
                   </a>
                 </h3>
-                <p className="text-base font-semibold text-gray-900">{callout.description}</p>
+                <p className="text-base font-semibold">訂單數量</p><p className="text-base font-semibold">贊助人次</p>
               </div>
             ))}
           </div>
